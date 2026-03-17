@@ -19,6 +19,9 @@
   "build": {
     "appId": "com.deturtle.widget",
     "productName": "DETURTLE",
-    "files": ["main.js", "preload.js", "renderer/**"]
+    "files": ["main.js", "preload.js", "renderer/**", "icon.png"],
+    "win": { "icon": "icon.png" },
+    "mac": { "icon": "icon.png" },
+    "linux": { "icon": "icon.png" }
   }
 }

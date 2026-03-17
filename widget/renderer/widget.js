@@ -269,7 +269,7 @@ $('login-btn').onclick = async () => {
     console.error('startSession error:', e);
     btn.textContent = '시작'; btn.disabled = false;
     $('username-input').value = '';
-    $('username-input').placeholder = e.message;
+    $('username-input').placeholder = `연결 실패: ${SERVER}`;
   }
 };
 
@@ -289,6 +289,9 @@ api.onAction(async (action) => {
     $('work-min').value = settings.work_minutes;
     $('break-min').value = settings.break_minutes;
     $('break-modal').hidden = false;
+  } else if (action === 'change-server') {
+    const url = prompt(`서버 주소 변경 (현재: ${SERVER})`);
+    if (url) { await api.saveConfig({ serverUrl: url.trim().replace(/\/$/, '') }); location.reload(); }
   }
 });
 
