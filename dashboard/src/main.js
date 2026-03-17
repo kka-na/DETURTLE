@@ -13,7 +13,7 @@ async function login(username) {
 }
 
 async function loadData(period = currentPeriod) {
-  const today = new Date().toISOString().slice(0, 10);
+  const today = new Date(Date.now() + 9 * 3600000).toISOString().slice(0, 10); // KST
   const [hourly, leaderboard] = await Promise.all([
     fetch(`${SERVER}/api/scores/${userId}/hourly?date=${today}`).then(r => r.json()),
     fetch(`${SERVER}/api/leaderboard?period=${period}`).then(r => r.json()),

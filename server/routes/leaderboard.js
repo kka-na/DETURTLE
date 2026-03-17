@@ -2,7 +2,11 @@ const r = require('express').Router();
 const db = require('../db/db');
 
 r.get('/', (req, res) => {
-  const cond = { today: "date(s.recorded_at)=date('now')", week: "s.recorded_at>=datetime('now','-7 days')", month: "s.recorded_at>=datetime('now','-30 days')" };
+  const cond = {
+    today: "date(s.recorded_at,'+9 hours')=date('now','+9 hours')",
+    week:  "s.recorded_at>=datetime('now','-7 days')",
+    month: "s.recorded_at>=datetime('now','-30 days')",
+  };
   const period = req.query.period || 'today';
   const rows = db.prepare(`
     SELECT u.id user_id, u.display_name, u.avatar_emoji,
