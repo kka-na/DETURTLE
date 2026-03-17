@@ -124,7 +124,7 @@ $('period-tabs').onclick = ({ target }) => {
 };
 
 // Settings
-const EMOJIS = ['🧑','👨','👩','🧔','🧕','👦','👧','🐢','🤓','😎','🦸','🧙','🥷','🐱','🐶'];
+const EMOJIS = ['🧑','👨','👩','🧔','🧕','👦','👧','🐢','🤓','😎','🦸','🧙','🥷','🐱','🐶','🐟'];
 const COLORS = [
   { label: '레벨별', value: null },
   { label: '파랑',   value: '#3498DB' },
