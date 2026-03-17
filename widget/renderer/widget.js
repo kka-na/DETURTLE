@@ -1,11 +1,11 @@
 let SERVER, WS_URL;
 
 const LEVELS = [,
-  { emoji: '😊', color: '#2ECC71', msg: '완벽해요!' },
-  { emoji: '🙂', color: '#82E0AA', msg: '좋아요' },
-  { emoji: '😐', color: '#F4D03F', msg: '조금 펴세요' },
-  { emoji: '😟', color: '#E67E22', msg: '등 굽어요!' },
-  { emoji: '🐢', color: '#E74C3C', msg: '거북이 됐어요! 목 피세요!' },
+  { emoji: '😊', color: '#2ECC71' },
+  { emoji: '🙂', color: '#82E0AA' },
+  { emoji: '😐', color: '#F4D03F' },
+  { emoji: '😟', color: '#E67E22' },
+  { emoji: '🐢', color: '#E74C3C' },
 ];
 
 // State
@@ -22,6 +22,7 @@ const video = $('video'), canvas = $('canvas');
 
 async function initConfig() {
   let { serverUrl } = await api.getConfig();
+  api.resize(200, 130); // 로그인/셋업 화면 크기
   if (!serverUrl) {
     setupView.hidden = false;
     serverUrl = await new Promise(resolve => {
@@ -50,7 +51,6 @@ function calcScore(cur, good, bad) {
 const scoreToLevel = s => s >= 85 ? 1 : s >= 65 ? 2 : s >= 45 ? 3 : s >= 25 ? 4 : 5;
 
 function extractMetrics(kp) {
-  const get = i => kp[i];
   const [nose, , , le, re, ls, rs] = kp;
   const shoulder_width = Math.abs(ls.x - rs.x);
   const shoulder_mid_x = (ls.x + rs.x) / 2;
@@ -71,8 +71,6 @@ function updateUI(score, level) {
   const lv = LEVELS[level];
   $('emoji').textContent = lv.emoji;
   document.body.style.boxShadow = `inset 0 0 8px ${lv.color}`;
-
-  // Blink border for level 4-5
   document.body.classList.toggle('blink', level >= 4);
 }
 
@@ -89,7 +87,6 @@ function updateBreakTimer() {
     const elapsed = (now - workStart) / 60000;
     const remaining = effectiveWork - elapsed;
     const timerEl = $('break-timer');
-
     if (remaining <= 5 && remaining > 0) {
       timerEl.textContent = `🕐 휴식 ${Math.ceil(remaining)}분 전`;
       timerEl.hidden = false;
@@ -124,6 +121,7 @@ function endBreak() {
   badMinutes = 0;
   goodStreak = 0;
   workStart = Date.now();
+  $('break-timer').hidden = true;
 }
 
 // MoveNet frame processing
@@ -132,7 +130,7 @@ async function processFrame() {
   const poses = await detector.estimatePoses(video);
   if (!poses.length) return;
   const kp = poses[0].keypoints;
-  if (kp[5].score < 0.3 || kp[6].score < 0.3) return; // need shoulders
+  if (kp[5].score < 0.3 || kp[6].score < 0.3) return;
 
   const metrics = extractMetrics(kp);
   if (!metrics) return;
@@ -141,13 +139,12 @@ async function processFrame() {
   const level = scoreToLevel(score);
   updateUI(score, level);
 
-  // Break posture tracking (per minute approx)
-  if (level >= 4) badMinutes += 0.5 / 60;
-  else if (level <= 2) goodStreak += 0.5 / 60;
+  // 1.5초 간격 → 분당 환산
+  if (level >= 4) badMinutes += 1.5 / 60;
+  else if (level <= 2) goodStreak += 1.5 / 60;
 
   updateBreakTimer();
 
-  // Post score every minute
   const now = Date.now();
   if (now - lastScorePost >= 60000) {
     lastScorePost = now;
@@ -220,15 +217,14 @@ async function runCalibration() {
   });
   calibration = { good_pose, bad_pose };
 
-  // 캘리브 뷰 숨기고 → resize 반영 대기 → 위젯 시작
   calibView.hidden = true;
   await new Promise(r => setTimeout(r, 100));
-  api.resize(100, 100, true);
-  await new Promise(r => setTimeout(r, 150));
   await startWidget();
 }
 
 async function startWidget() {
+  api.resize(100, 100, true);
+  await new Promise(r => setTimeout(r, 150));
   widgetView.hidden = false;
   connectWS();
   await startCamera();
@@ -236,7 +232,7 @@ async function startWidget() {
 
 const initDetector = () => poseDetection.createDetector(
   poseDetection.SupportedModels.MoveNet,
-  { modelUrl: 'http://localhost:2228/movenet/model.json' }
+  { modelUrl: `${SERVER}/movenet/model.json` }
 );
 
 async function startSession(uid) {
@@ -288,18 +284,28 @@ api.onAction(async (action) => {
   } else if (action === 'break-settings') {
     $('work-min').value = settings.work_minutes;
     $('break-min').value = settings.break_minutes;
+    api.resize(200, 150);
     $('break-modal').hidden = false;
   } else if (action === 'change-server') {
-    const url = prompt(`서버 주소 변경 (현재: ${SERVER})`);
-    if (url) { await api.saveConfig({ serverUrl: url.trim().replace(/\/$/, '') }); location.reload(); }
+    $('server-modal-input').value = SERVER;
+    api.resize(240, 130);
+    $('server-modal').hidden = false;
   }
 });
+
+$('server-modal-save').onclick = async () => {
+  const url = $('server-modal-input').value.trim().replace(/\/$/, '');
+  if (!url) return;
+  await api.saveConfig({ serverUrl: url });
+  location.reload();
+};
 
 $('save-settings').onclick = async () => {
   settings.work_minutes = +$('work-min').value;
   settings.break_minutes = +$('break-min').value;
   await fetch(`${SERVER}/api/settings/${userId}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(settings) });
   $('break-modal').hidden = true;
+  api.resize(100, 100, true);
 };
 
 (async () => {
