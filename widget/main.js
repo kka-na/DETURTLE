@@ -2,7 +2,11 @@ const { app, BrowserWindow, ipcMain, Menu, Notification, screen, session } = req
 const path = require('path');
 const fs = require('fs');
 
-const config = JSON.parse(fs.readFileSync(path.join(__dirname, 'config.json'), 'utf8'));
+const configPath = path.join(app.getPath('userData'), 'config.json');
+const defaultConfig = { serverUrl: '' };
+let config = fs.existsSync(configPath)
+  ? JSON.parse(fs.readFileSync(configPath, 'utf8'))
+  : defaultConfig;
 let win;
 
 app.whenReady().then(() => {
@@ -23,6 +27,11 @@ app.whenReady().then(() => {
 
   win.loadFile('renderer/index.html');
   ipcMain.handle('get-config', () => config);
+  ipcMain.handle('save-config', (_, newConfig) => {
+    config = { ...config, ...newConfig };
+    fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
+    return config;
+  });
 
 });
 

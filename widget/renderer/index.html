@@ -6,8 +6,15 @@
   <link rel="stylesheet" href="widget.css">
 </head>
 <body>
+  <!-- Server setup (첫 실행) -->
+  <div id="setup-view" hidden>
+    <div style="font-size:11px;opacity:.6;margin-bottom:4px;">서버 주소</div>
+    <input id="server-input" placeholder="http://192.168.x.x:2228" />
+    <button id="setup-btn">연결</button>
+  </div>
+
   <!-- Login -->
-  <div id="login-view">
+  <div id="login-view" hidden>
     <input id="username-input" placeholder="사용자명" />
     <button id="login-btn">시작</button>
   </div>

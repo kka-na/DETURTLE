@@ -1,6 +1,4 @@
-const { serverUrl } = await api.getConfig();
-const SERVER = serverUrl;
-const WS_URL = serverUrl.replace(/^http/, 'ws');
+let SERVER, WS_URL;
 
 const LEVELS = [,
   { emoji: '😊', color: '#2ECC71', msg: '완벽해요!' },
@@ -18,8 +16,27 @@ let lastScorePost = 0, frameTimer = null;
 
 // DOM
 const $ = id => document.getElementById(id);
+const setupView = $('setup-view');
 const loginView = $('login-view'), calibView = $('calib-view'), widgetView = $('widget-view');
 const video = $('video'), canvas = $('canvas');
+
+async function initConfig() {
+  let { serverUrl } = await api.getConfig();
+  if (!serverUrl) {
+    setupView.hidden = false;
+    serverUrl = await new Promise(resolve => {
+      $('setup-btn').onclick = async () => {
+        const url = $('server-input').value.trim().replace(/\/$/, '');
+        if (!url) return;
+        await api.saveConfig({ serverUrl: url });
+        resolve(url);
+      };
+    });
+    setupView.hidden = true;
+  }
+  SERVER = serverUrl;
+  WS_URL = serverUrl.replace(/^http/, 'ws');
+}
 
 // Score logic
 function calcScore(cur, good, bad) {
@@ -282,10 +299,12 @@ $('save-settings').onclick = async () => {
   $('break-modal').hidden = true;
 };
 
-// Auto-login
-const savedId = localStorage.getItem('userId');
-if (savedId) {
-  (async () => {
+(async () => {
+  await initConfig();
+  loginView.hidden = false;
+
+  const savedId = localStorage.getItem('userId');
+  if (savedId) {
     try {
       const res = await fetch(`${SERVER}/api/auth/me?id=${savedId}`);
       if (!res.ok) { localStorage.removeItem('userId'); return; }
@@ -293,5 +312,5 @@ if (savedId) {
     } catch (e) {
       console.error('Auto-login failed:', e);
     }
-  })();
-}
+  }
+})();
