@@ -3,7 +3,7 @@
 
 body {
   width: 100vw; height: 100vh;
-  background: rgba(20, 20, 30, 0.92);
+  background: transparent;
   border-radius: 16px;
   color: #fff;
   font-family: 'Segoe UI', sans-serif;
@@ -37,8 +37,12 @@ body.blink { animation: blink 1s infinite; }
 }
 #menu-btn:hover { color: rgba(255,255,255,0.8); }
 
-/* Setup / Login view */
-#setup-view, #login-view { display: flex; flex-direction: column; gap: 6px; padding: 16px; width: 100%; }
+/* Setup / Login / Calib view — 배경 있음 */
+#setup-view, #login-view {
+  position: fixed; inset: 0;
+  display: flex; flex-direction: column; justify-content: center; gap: 6px; padding: 16px;
+  background: rgba(20, 20, 30, 0.92); border-radius: 16px;
+}
 #username-input {
   background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
   border-radius: 6px; color: #fff; padding: 4px 8px; font-size: 11px; width: 100%;
@@ -49,7 +53,11 @@ body.blink { animation: blink 1s infinite; }
 }
 
 /* Calibration */
-#calib-view { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 16px; width: 720px; }
+#calib-view {
+  position: fixed; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 16px;
+  background: rgba(20, 20, 30, 0.92); border-radius: 16px; width: 720px;
+}
 #calib-video { width: 720px; height: 480px; border-radius: 8px; object-fit: cover; }
 #calib-msg { font-size: 16px; text-align: center; }
 #calib-count { font-size: 48px; font-weight: bold; }
