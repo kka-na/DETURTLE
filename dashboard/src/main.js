@@ -1,4 +1,4 @@
-import { renderChart, updateChart, updateChartDaily } from './chart.js';
+import { renderChart, updateChart, updateChartDaily, setChartColor } from './chart.js';
 import { renderLeaderboard } from './leaderboard.js';
 
 const SERVER = '';
@@ -122,6 +122,77 @@ $('period-tabs').onclick = ({ target }) => {
   currentPeriod = target.dataset.period;
   loadData(currentPeriod);
 };
+
+// Settings
+const EMOJIS = ['🧑','👨','👩','🧔','🧕','👦','👧','🐢','🤓','😎','🦸','🧙','🥷','🐱','🐶'];
+const COLORS = [
+  { label: '레벨별', value: null },
+  { label: '파랑',   value: '#3498DB' },
+  { label: '초록',   value: '#2ECC71' },
+  { label: '보라',   value: '#9B59B6' },
+  { label: '분홍',   value: '#E91E63' },
+  { label: '주황',   value: '#FF9800' },
+];
+
+// 피커 UI 생성
+$('emoji-picker').innerHTML = EMOJIS.map(e =>
+  `<button class="emoji-opt" data-emoji="${e}" style="background:rgba(255,255,255,0.05);border:2px solid transparent;border-radius:8px;padding:4px 6px;font-size:20px;cursor:pointer;">${e}</button>`
+).join('');
+
+$('color-picker').innerHTML = COLORS.map(c =>
+  `<button class="color-opt" data-color="${c.value}" style="background:${c.value ?? 'rgba(255,255,255,0.1)'};border:2px solid transparent;border-radius:8px;padding:4px 10px;font-size:12px;color:#fff;cursor:pointer;">${c.label}</button>`
+).join('');
+
+$('settings-btn').onclick = () => {
+  const saved = localStorage.getItem('chartColor');
+  document.querySelectorAll('.color-opt').forEach(el => {
+    el.classList.toggle('active', el.dataset.color === (saved ?? 'null'));
+  });
+  $('settings-modal').hidden = false;
+};
+
+$('settings-close').onclick = () => $('settings-modal').hidden = true;
+
+document.querySelectorAll('.emoji-opt').forEach(el => {
+  el.onclick = () => {
+    document.querySelectorAll('.emoji-opt').forEach(e => e.classList.remove('active'));
+    el.classList.add('active');
+  };
+});
+
+document.querySelectorAll('.color-opt').forEach(el => {
+  el.onclick = () => {
+    document.querySelectorAll('.color-opt').forEach(e => e.classList.remove('active'));
+    el.classList.add('active');
+  };
+});
+
+$('settings-save').onclick = async () => {
+  const emoji = document.querySelector('.emoji-opt.active')?.dataset.emoji;
+  const colorEl = document.querySelector('.color-opt.active');
+  const color = colorEl?.dataset.color === 'null' ? null : colorEl?.dataset.color;
+
+  if (emoji) {
+    const user = await fetch(`${SERVER}/api/auth/profile`, {
+      method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: userId, avatar_emoji: emoji }),
+    }).then(r => r.json());
+    $('user-greeting').textContent = `${user.avatar_emoji} ${user.display_name}`;
+  }
+
+  if (colorEl) {
+    if (color) localStorage.setItem('chartColor', color);
+    else localStorage.removeItem('chartColor');
+    setChartColor(color);
+    loadData();
+  }
+
+  $('settings-modal').hidden = true;
+};
+
+// 저장된 그래프 색 복원
+const savedColor = localStorage.getItem('chartColor');
+if (savedColor) setChartColor(savedColor);
 
 const savedId = localStorage.getItem('userId');
 if (savedId) {

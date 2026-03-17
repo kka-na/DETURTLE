@@ -44,6 +44,8 @@
     .lb-score { font-size: 13px; font-weight: bold; color: #3498DB; }
     .lb-good { font-size: 11px; color: #2ECC71; }
     @media (max-width: 768px) { main { grid-template-columns: 1fr; } #leaderboard-card { grid-column: 1; } }
+    .emoji-opt.active, .color-opt.active { border-color: #3498DB !important; }
+    .emoji-opt:hover, .color-opt:hover { opacity: 0.8; }
     /* Calendar */
     .cal-header { display: grid; grid-template-columns: repeat(7,1fr); text-align: center; font-size: 11px; opacity: 0.4; margin-bottom: 6px; }
     .cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 4px; }
@@ -70,7 +72,30 @@
       <button class="tab" data-period="week">주간</button>
       <button class="tab" data-period="month">월간</button>
     </div>
+    <button id="settings-btn" style="background:transparent;border:none;color:#aaa;font-size:18px;cursor:pointer;padding:4px 8px;">⚙</button>
   </header>
+
+  <!-- Settings Modal -->
+  <div id="settings-modal" hidden style="position:fixed;inset:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:200;">
+    <div style="background:#1a1d2e;border-radius:16px;padding:28px;min-width:320px;border:1px solid #2a2d3e;">
+      <h3 style="margin-bottom:20px;font-size:15px;">설정</h3>
+
+      <div style="margin-bottom:20px;">
+        <div style="font-size:12px;opacity:.5;margin-bottom:8px;">아바타 이모지</div>
+        <div id="emoji-picker" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
+      </div>
+
+      <div style="margin-bottom:24px;">
+        <div style="font-size:12px;opacity:.5;margin-bottom:8px;">그래프 색상</div>
+        <div id="color-picker" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
+      </div>
+
+      <div style="display:flex;gap:8px;justify-content:flex-end;">
+        <button id="settings-close" style="background:transparent;border:1px solid #2a2d3e;color:#aaa;border-radius:8px;padding:6px 16px;cursor:pointer;font-size:13px;">취소</button>
+        <button id="settings-save" style="background:#3498DB;border:none;color:#fff;border-radius:8px;padding:6px 16px;cursor:pointer;font-size:13px;">저장</button>
+      </div>
+    </div>
+  </div>
 
   <main hidden id="main-content">
     <div class="card" id="chart-card">

@@ -17,6 +17,12 @@ r.post('/login', (req, res) => {
   res.json(u);
 });
 
+r.patch('/profile', (req, res) => {
+  const { id, avatar_emoji, display_name } = req.body;
+  db.prepare('UPDATE users SET avatar_emoji=COALESCE(?,avatar_emoji), display_name=COALESCE(?,display_name) WHERE id=?').run(avatar_emoji ?? null, display_name ?? null, id);
+  res.json(db.prepare('SELECT * FROM users WHERE id=?').get(id));
+});
+
 r.get('/me', (req, res) => {
   const u = db.prepare('SELECT * FROM users WHERE id=?').get(req.query.id);
   u ? res.json(u) : res.status(404).json({ error: 'Not found' });

@@ -2,8 +2,11 @@ let chart = null;
 
 const LEVEL_COLORS = ['#2ECC71', '#82E0AA', '#F4D03F', '#E67E22', '#E74C3C'];
 
-function scoreColor(avgLevel) {
-  return LEVEL_COLORS[Math.round(avgLevel) - 1] || '#3498DB';
+let _chartColor = null; // null = 레벨별, string = 고정색
+export function setChartColor(c) { _chartColor = c; }
+
+function barColor(avgLevel) {
+  return _chartColor ?? (LEVEL_COLORS[Math.round(avgLevel) - 1] || '#3498DB');
 }
 
 export function renderChart(canvas) {
@@ -32,7 +35,7 @@ export function updateChart(hourlyData) {
   hourlyData.forEach(({ hour, avg_score, avg_level }) => {
     const h = +hour;
     data[h] = Math.round(avg_score);
-    const c = scoreColor(avg_level);
+    const c = barColor(avg_level);
     colors[h] = c + '66';
     borders[h] = c;
   });
@@ -47,8 +50,8 @@ export function updateChartDaily(dailyData, dayLabels) {
   if (!chart) return;
   const map = Object.fromEntries(dailyData.map(d => [d.day, d]));
   const data = dayLabels.map(l => map[l] ? Math.round(map[l].avg_score) : null);
-  const colors = dayLabels.map(l => map[l] ? scoreColor(map[l].avg_level) + '66' : 'rgba(255,255,255,0.05)');
-  const borders = dayLabels.map(l => map[l] ? scoreColor(map[l].avg_level) : 'rgba(255,255,255,0.1)');
+  const colors = dayLabels.map(l => map[l] ? barColor(map[l].avg_level) + '66' : 'rgba(255,255,255,0.05)');
+  const borders = dayLabels.map(l => map[l] ? barColor(map[l].avg_level) : 'rgba(255,255,255,0.1)');
   chart.data.labels = dayLabels.map(l => l.slice(5).replace('-', '/'));
   chart.data.datasets[0].data = data;
   chart.data.datasets[0].backgroundColor = colors;
