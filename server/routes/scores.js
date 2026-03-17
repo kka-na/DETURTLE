@@ -17,6 +17,15 @@ r.get('/:userId', (req, res) => {
   res.json(db.prepare(`SELECT * FROM scores WHERE user_id=? AND ${cond[range]} ORDER BY recorded_at`).all(req.params.userId));
 });
 
+r.get('/:userId/daily', (req, res) => {
+  res.json(db.prepare(
+    `SELECT date(recorded_at,'+9 hours') day,
+      ROUND(AVG(score),1) avg_score, ROUND(AVG(level),1) avg_level
+     FROM scores WHERE user_id=? AND date(recorded_at,'+9 hours') BETWEEN ? AND ?
+     GROUP BY day ORDER BY day`
+  ).all(req.params.userId, req.query.start, req.query.end));
+});
+
 r.get('/:userId/hourly', (req, res) => {
   // date 파라미터는 KST 날짜 (YYYY-MM-DD), recorded_at은 UTC 저장 → +9시간 보정
   res.json(db.prepare(

@@ -44,6 +44,14 @@
     .lb-score { font-size: 13px; font-weight: bold; color: #3498DB; }
     .lb-good { font-size: 11px; color: #2ECC71; }
     @media (max-width: 768px) { main { grid-template-columns: 1fr; } #leaderboard-card { grid-column: 1; } }
+    /* Calendar */
+    .cal-header { display: grid; grid-template-columns: repeat(7,1fr); text-align: center; font-size: 11px; opacity: 0.4; margin-bottom: 6px; }
+    .cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 4px; }
+    .cal-cell { border-radius: 6px; padding: 6px 4px; text-align: center; min-height: 44px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; background: rgba(255,255,255,0.04); }
+    .cal-cell.empty { background: transparent; }
+    .cal-cell.today { outline: 2px solid #3498DB; }
+    .cal-day { font-size: 11px; opacity: 0.6; }
+    .cal-score { font-size: 13px; font-weight: bold; }
   </style>
 </head>
 <body>
@@ -66,8 +74,9 @@
 
   <main hidden id="main-content">
     <div class="card" id="chart-card">
-      <h2>시간대별 자세 점수</h2>
+      <h2 id="chart-title">시간대별 자세 점수</h2>
       <canvas id="score-chart"></canvas>
+      <div id="calendar" hidden></div>
     </div>
     <div class="card" id="leaderboard-card">
       <h2>팀 리더보드</h2>
