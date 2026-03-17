@@ -39,4 +39,5 @@ function download(url, dest) {
     console.log(' 완료');
   }
   console.log('모델 준비 완료!');
+  process.exit(0);
 })().catch(e => { console.error(e.message); process.exit(1); });

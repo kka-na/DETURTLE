@@ -265,7 +265,7 @@ $('login-btn').onclick = async () => {
     console.error('startSession error:', e);
     btn.textContent = '시작'; btn.disabled = false;
     $('username-input').value = '';
-    $('username-input').placeholder = `연결 실패: ${SERVER}`;
+    $('login-error').textContent = e.message || String(e);
   }
 };
 
