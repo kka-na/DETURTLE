@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://tfhub.dev https://storage.googleapis.com https://www.kaggle.com; media-src 'self' mediastream:; connect-src 'self' http://localhost:2228 ws://localhost:2228 https://tfhub.dev https://storage.googleapis.com https://www.kaggle.com https://cdn.jsdelivr.net;">
+  <link rel="stylesheet" href="widget.css">
+</head>
+<body>
+  <!-- Login -->
+  <div id="login-view">
+    <input id="username-input" placeholder="사용자명" />
+    <button id="login-btn">시작</button>
+  </div>
+
+  <!-- Calibration -->
+  <div id="calib-view" hidden>
+    <div id="calib-msg">캘리브레이션</div>
+    <div id="calib-count"></div>
+    <video id="calib-video" autoplay playsinline muted></video>
+    <button id="calib-start-btn">시작</button>
+  </div>
+
+  <!-- Widget -->
+  <div id="widget-view" hidden>
+    <video id="video" autoplay playsinline muted hidden></video>
+    <canvas id="canvas" hidden></canvas>
+    <div id="emoji">😐</div>
+    <div id="break-timer" hidden></div>
+    <button id="menu-btn">⚙</button>
+  </div>
+
+  <!-- Break settings modal -->
+  <div id="break-modal" hidden>
+    <label>작업 <select id="work-min"><option>25</option><option selected>50</option><option>90</option></select>분</label>
+    <label>휴식 <select id="break-min"><option>5</option><option selected>10</option><option>15</option></select>분</label>
+    <button id="save-settings">저장</button>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core@4.17.0/dist/tf-core.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-converter@4.17.0/dist/tf-converter.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgl@4.17.0/dist/tf-backend-webgl.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/pose-detection@2.1.3/dist/pose-detection.min.js"></script>
+  <script type="module" src="widget.js"></script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+{
+  "name": "deturtle-dashboard",
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "devDependencies": {
+    "vite": "^5.1.0"
+  }
+}

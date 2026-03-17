@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DETURTLE</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    [hidden] { display: none !important; }
+    body { background: #0f1117; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; min-height: 100vh; }
+    header { background: #1a1d2e; padding: 16px 24px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid #2a2d3e; }
+    header h1 { font-size: 20px; letter-spacing: 2px; }
+    header span { font-size: 12px; opacity: 0.5; flex: 1; }
+    #period-tabs { display: flex; gap: 8px; }
+    .tab { background: transparent; border: 1px solid #2a2d3e; color: #aaa; border-radius: 6px; padding: 4px 12px; font-size: 12px; cursor: pointer; }
+    .tab.active { background: #3498DB; border-color: #3498DB; color: #fff; }
+    main { padding: 24px; display: grid; grid-template-columns: 1fr 340px; gap: 24px; max-width: 1200px; margin: 0 auto; }
+    .card { background: #1a1d2e; border-radius: 12px; padding: 20px; border: 1px solid #2a2d3e; }
+    .card h2 { font-size: 14px; opacity: 0.6; margin-bottom: 16px; letter-spacing: 1px; text-transform: uppercase; }
+    #chart-card { grid-column: 1; }
+    #leaderboard-card { grid-column: 2; }
+    /* Login */
+    #login-overlay {
+      position: fixed; inset: 0; background: #0f1117;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; z-index: 100;
+    }
+    #login-overlay h1 { font-size: 32px; letter-spacing: 4px; }
+    #login-overlay p { opacity: 0.5; font-size: 13px; }
+    #username-input {
+      background: #1a1d2e; border: 1px solid #2a2d3e; color: #e0e0e0;
+      padding: 10px 16px; border-radius: 8px; font-size: 14px; width: 280px;
+    }
+    #login-btn {
+      background: #3498DB; border: none; color: #fff; border-radius: 8px;
+      padding: 10px 32px; font-size: 14px; cursor: pointer; width: 280px;
+    }
+    /* Leaderboard */
+    .lb-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid #2a2d3e; }
+    .lb-row:last-child { border-bottom: none; }
+    .lb-rank { font-size: 18px; width: 28px; text-align: center; }
+    .lb-avatar { font-size: 22px; }
+    .lb-name { flex: 1; font-size: 13px; }
+    .lb-score { font-size: 13px; font-weight: bold; color: #3498DB; }
+    .lb-good { font-size: 11px; color: #2ECC71; }
+    @media (max-width: 768px) { main { grid-template-columns: 1fr; } #leaderboard-card { grid-column: 1; } }
+  </style>
+</head>
+<body>
+  <div id="login-overlay">
+    <h1>🐢 DETURTLE</h1>
+    <p>거북목? Deturtle yourself.</p>
+    <input id="username-input" placeholder="사용자명 입력" />
+    <button id="login-btn">시작하기</button>
+  </div>
+
+  <header hidden id="main-header">
+    <h1>🐢 DETURTLE</h1>
+    <span id="user-greeting"></span>
+    <div id="period-tabs">
+      <button class="tab active" data-period="today">오늘</button>
+      <button class="tab" data-period="week">주간</button>
+      <button class="tab" data-period="month">월간</button>
+    </div>
+  </header>
+
+  <main hidden id="main-content">
+    <div class="card" id="chart-card">
+      <h2>시간대별 자세 점수</h2>
+      <canvas id="score-chart"></canvas>
+    </div>
+    <div class="card" id="leaderboard-card">
+      <h2>팀 리더보드</h2>
+      <div id="leaderboard"></div>
+    </div>
+  </main>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

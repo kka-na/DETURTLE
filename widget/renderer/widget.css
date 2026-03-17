@@ -1,0 +1,74 @@
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+[hidden] { display: none !important; }
+
+body {
+  width: 100vw; height: 100vh;
+  background: rgba(20, 20, 30, 0.92);
+  border-radius: 16px;
+  color: #fff;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 12px;
+  user-select: none;
+  -webkit-app-region: drag;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  transition: box-shadow 0.5s;
+}
+
+button, input, select { -webkit-app-region: no-drag; }
+
+@keyframes blink { 0%,100% { opacity:1 } 50% { opacity:0.4 } }
+body.blink { animation: blink 1s infinite; }
+
+#emoji { font-size: 52px; line-height: 1; }
+#break-timer { font-size: 10px; opacity: 0.75; margin-top: 2px; }
+
+#menu-btn {
+  position: absolute; bottom: 4px; right: 4px;
+  background: transparent; border: none;
+  color: rgba(255,255,255,0.3); font-size: 11px;
+  cursor: pointer; padding: 2px;
+  -webkit-app-region: no-drag;
+  line-height: 1;
+}
+#menu-btn:hover { color: rgba(255,255,255,0.8); }
+
+/* Login view */
+#login-view { display: flex; flex-direction: column; gap: 6px; padding: 16px; width: 100%; }
+#username-input {
+  background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 6px; color: #fff; padding: 4px 8px; font-size: 11px; width: 100%;
+}
+#login-btn {
+  background: #3498DB; border: none; border-radius: 6px;
+  color: #fff; padding: 5px; font-size: 11px; cursor: pointer; width: 100%;
+}
+
+/* Calibration */
+#calib-view { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 16px; width: 720px; }
+#calib-video { width: 720px; height: 480px; border-radius: 8px; object-fit: cover; }
+#calib-msg { font-size: 16px; text-align: center; }
+#calib-count { font-size: 48px; font-weight: bold; }
+#calib-start-btn {
+  background: #2ECC71; border: none; border-radius: 8px;
+  color: #fff; padding: 8px 32px; font-size: 14px; cursor: pointer;
+}
+
+/* Break modal */
+#break-modal {
+  position: fixed; inset: 0;
+  background: rgba(20,20,30,0.95);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+  border-radius: 16px;
+  -webkit-app-region: no-drag;
+}
+#break-modal label { font-size: 11px; display: flex; align-items: center; gap: 4px; }
+#break-modal select { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color:#fff; border-radius:4px; padding:2px; }
+#save-settings {
+  background: #3498DB; border: none; border-radius: 6px;
+  color: #fff; padding: 4px 16px; font-size: 11px; cursor: pointer; margin-top: 4px;
+}
