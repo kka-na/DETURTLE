@@ -1,0 +1,15 @@
+node_modules/
+dist/
+
+# 서버 주소가 담긴 개인 설정 (직접 생성)
+widget/config.json
+
+# SQLite
+*.db
+*.db-shm
+*.db-wal
+
+# MoveNet 모델 (npm run setup 으로 다운로드)
+server/public/movenet/*.bin
+
+.env

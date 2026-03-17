@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, Menu, Notification, screen } = require('electron');
+const { app, BrowserWindow, ipcMain, Menu, Notification, screen, session } = require('electron');
 const path = require('path');
 const fs = require('fs');
 
@@ -14,9 +14,15 @@ app.whenReady().then(() => {
     resizable: false, skipTaskbar: true,
     webPreferences: { preload: path.join(__dirname, 'preload.js'), contextIsolation: true }
   });
+  // CSP를 config의 serverUrl 기반으로 동적 설정
+  const wsUrl = config.serverUrl.replace(/^http/, 'ws');
+  const csp = `default-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://storage.googleapis.com; media-src 'self' mediastream:; connect-src 'self' ${config.serverUrl} ${wsUrl} https://storage.googleapis.com https://cdn.jsdelivr.net;`;
+  session.defaultSession.webRequest.onHeadersReceived((details, cb) => {
+    cb({ responseHeaders: { ...details.responseHeaders, 'Content-Security-Policy': [csp] } });
+  });
+
   win.loadFile('renderer/index.html');
   ipcMain.handle('get-config', () => config);
-  win.webContents.openDevTools({ mode: 'detach' });
 
 });
 
